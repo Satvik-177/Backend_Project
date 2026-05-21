@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 import userModel from "../models/user.model.js"
 import jwt from "jsonwebtoken"
+import tokenBlacklistModel from "../models/blacklist.model.js"
 
 /**
  * @name userRegisterController
@@ -100,4 +101,49 @@ export const loginUserController = async(req,res)=>{
         }
     })
 }
+
+/**
+ * @name logoutUserController
+ * @description clear token from user cookie and add the token in the blacklist
+ * @access Public
+ */
+
+export const logoutUserController = async(req,res)=>{
+
+    const token = req.cookies.token
+
+    if(token){
+        await tokenBlacklistModel.create({token})
+    }
+
+    res.clearCookie("token")
+
+    res.status(200).json({
+        message:"user logged out successfully"
+    })
+}
+
+/**
+ * @name getMeController
+ * @description get the current loggedin user details
+ * @access Private
+ */
+
+export const getMeController = async(req,res)=>{
+
+    const user = await userModel.findById(req.user.id)
+
+    res.status(200).json({
+        message:"user fetched successfully",
+        user:{
+
+          id:user._id,
+          username:user.username,
+          email:user.email
+        }
+    })
+}
+
+
+
 
