@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 import userModel from "../models/user.model.js"
 import jwt from "jsonwebtoken"
@@ -25,7 +24,7 @@ export const userRegisterController = async(req,res)=>{
     })
 
     if(isUserExists){
-        res.status(400).json({
+        return res.status(400).json({
             message:"user already exists with this email or username"
         })
     }
@@ -66,6 +65,12 @@ export const userRegisterController = async(req,res)=>{
 export const loginUserController = async(req,res)=>{
 
     const{email,password} = req.body
+
+    if(!email || !password){
+    return res.status(400).json({
+        message:"Please provide email and password"
+    })
+}
 
     const user = await userModel.findOne({email})
 

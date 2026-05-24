@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import tokenBlacklistModel from "../models/blacklist.model"
+import tokenBlacklistModel from "../models/blacklist.model.js"
 
 export const authUser = async(req,res,next) =>{
 
